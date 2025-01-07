@@ -148,19 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // widok semestru
-    function renderSemesterView() {
-        calendarGrid.style.gridTemplateColumns = "repeat(7, 1fr)";
-        calendarGrid.style.gridTemplateRows = "repeat(16, 1fr)"; // Przykład dla semestru
-
-        for (let i = 0; i < 16 * 7; i++) {
-            const cell = document.createElement("div");
-            cell.textContent = `T${Math.floor(i / 7) + 1}, D${i % 7 + 1}`;
-            calendarGrid.appendChild(cell);
-        }
-    }
-
-    viewSelector.innerHTML += `<option value="semestr">Semestr</option>`;
+   
     viewSelector.addEventListener("change", renderCalendar);
     renderCalendar();
 });
