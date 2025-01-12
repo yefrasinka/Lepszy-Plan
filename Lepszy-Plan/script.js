@@ -136,3 +136,17 @@ function loadFiltersFromURL() {
 
 document.addEventListener("DOMContentLoaded", loadFiltersFromURL);
 }); */
+
+document.addEventListener("DOMContentLoaded", () => {
+    const loadRecordsButton = document.getElementById("downloadScheduleButton");
+
+    loadRecordsButton.addEventListener("click", async () => {
+        try {
+            // Перенаправление на сервер для генерации iCal файла
+            window.location.href = "generate_ical.php";  // Этот файл будет генерировать iCal
+        } catch (error) {
+            console.error("Błąd:", error);
+            alert("Błąd przy generowaniu pliku iCal");
+        }
+    });
+});
