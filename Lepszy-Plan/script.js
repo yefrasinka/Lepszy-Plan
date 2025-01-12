@@ -1,33 +1,75 @@
 document.addEventListener("DOMContentLoaded", () => {
     const favButton = document.getElementById("fav");
 
-    // Przełącznik ulubionych (serduszko)
+    // Toggle favorite button (heart)
     favButton.addEventListener("click", () => {
-        if (favButton.textContent === "♡") {
-            favButton.textContent = "❤️";
-        } else {
-            favButton.textContent = "♡";
+        favButton.textContent = favButton.textContent === "♡" ? "❤️" : "♡";
+    });
+
+    // Initialize FullCalendar
+    const calendarEl = document.getElementById("calendar");
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridWeek',
+        headerToolbar: false,
+        locale: 'pl', 
+        firstDay: 1,
+        events: [
+            {
+                title: 'Wykład - Matematyka',
+                start: '2025-01-12T10:00:00',
+                end: '2025-01-12T12:00:00',
+                color: 'blue'
+            },
+            {
+                title: 'Laboratorium - Fizyka',
+                start: '2025-01-09T14:00:00',
+                end: '2025-01-09T16:00:00',
+                color: 'green'
+            }
+        ],
+        eventClick: function(info) {
+            // Display event details in a modal
+            const modal = document.createElement('div');
+            modal.className = 'event-modal active';
+            modal.innerHTML = `
+                <h3>${info.event.title}</h3>
+                <p><strong>Start:</strong> ${info.event.start.toLocaleString()}</p>
+                <p><strong>Koniec:</strong> ${info.event.end.toLocaleString()}</p>
+                <button class="close-button">Zamknij</button>
+            `;
+
+            document.body.appendChild(modal);
+
+            // Close button logic
+            modal.querySelector('.close-button').addEventListener('click', () => {
+                modal.remove();
+            });
         }
     });
 
-// obsługa przycisku dodania do ulubionych (♥)
-    function toggleFavorite() {
-        const currentPlan = window.location.href;
-        let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-        if (favorites.includes(currentPlan)) {
-            favorites = favorites.filter(plan => plan !== currentPlan);
-        } else {
-            favorites.push(currentPlan);
-        }
-        localStorage.setItem("favorites", JSON.stringify(favorites));
-        alert(favorites.includes(currentPlan) ? "Dodano do ulubionych!" : "Usunięto z ulubionych!");
-    }
+    calendar.render();
 
-    document.getElementById("fav").addEventListener("click", toggleFavorite);
+    // View change logic
+    const viewSelector = document.getElementById("view");
+    viewSelector.addEventListener("change", () => {
+        calendar.changeView(viewSelector.value);
+    });
 
+    // Calendar navigation buttons
+    document.getElementById("today").addEventListener("click", () => calendar.today());
+    document.getElementById("prev").addEventListener("click", () => calendar.prev());
+    document.getElementById("next").addEventListener("click", () => calendar.next());
+
+    // Theme toggle
+    const themeToggle = document.getElementById("theme-toggle");
+    themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark-theme");
+        document.body.classList.toggle("light-theme");
+        themeToggle.textContent = document.body.classList.contains("dark-theme") ? "🌙" : "☀️";
+    });
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+/* document.addEventListener("DOMContentLoaded", () => {
     const fields = [
         document.getElementById("wykladowca"),
         document.getElementById("sala"),
@@ -65,96 +107,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     searchButton.addEventListener("click", checkIfEmpty);
 
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const themeToggle = document.getElementById("theme-toggle");
-    const body = document.body;
-    const calendarGrid = document.getElementById("calendar-grid");
-    const viewSelector = document.getElementById("view");
-    const timeLabels = Array.from({ length: 14 }, (_, i) => `${7 + i}:00`);
-
-    // Zmiana tematu
-    themeToggle.addEventListener("click", () => {
-        body.classList.toggle("dark-theme");
-        body.classList.toggle("light-theme");
-        themeToggle.textContent = body.classList.contains("dark-theme") ? "🌙" : "☀️";
-    });
-
-    // Renderowanie widoku
-    viewSelector.addEventListener("change", renderCalendar);
-
-    function renderCalendar() {
-        const view = viewSelector.value;
-        calendarGrid.innerHTML = "";
-
-        if (view === "dzien") {
-            renderDayView();
-        } else if (view === "tydzien") {
-            renderWeekView();
-        } else if (view === "miesiac"){
-            renderMonthView();
-        } else if (view === "semestr"){
-            renderSemesterView();
-        }
-
-    }
-
-    function renderDayView() {
-        calendarGrid.style.gridTemplateColumns = "1fr";
-        calendarGrid.style.gridTemplateRows = `repeat(${timeLabels.length}, 1fr)`;
-
-        timeLabels.forEach((time) => {
-            const timeCell = document.createElement("div");
-            timeCell.textContent = time;
-            calendarGrid.appendChild(timeCell);
-        });
-    }
-
-    function renderWeekView() {
-        calendarGrid.style.gridTemplateColumns = "repeat(8, 1fr)";
-        calendarGrid.style.gridTemplateRows = `repeat(${timeLabels.length}, 1fr)`;
-
-        const daysOfWeek = [" ", "Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"];
-
-        daysOfWeek.forEach((day) => {
-            const dayCell = document.createElement("div");
-            dayCell.textContent = day;
-            calendarGrid.appendChild(dayCell);
-        });
-
-        for (let i = 0; i < timeLabels.length * 8; i++) {
-            const cell = document.createElement("div");
-            cell.textContent = i % 8 === 0 ? timeLabels[Math.floor(i / 7)] : "";
-            calendarGrid.appendChild(cell);
-        }
-    }
-
-    function renderMonthView() {
-        calendarGrid.style.gridTemplateColumns = "repeat(7, 1fr)";
-        calendarGrid.style.gridTemplateRows = "repeat(6, 1fr)";
-
-        const daysOfWeek = ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"];
-        daysOfWeek.forEach((day) => {
-            const dayCell = document.createElement("div");
-            dayCell.textContent = day;
-            calendarGrid.appendChild(dayCell);
-        });
-
-        for (let i = 1; i <= 42; i++) {
-            const dayCell = document.createElement("div");
-            dayCell.textContent = i <= 31 ? i : "";
-            calendarGrid.appendChild(dayCell);
-        }
-    }
-
-   
-    viewSelector.addEventListener("change", renderCalendar);
-    renderCalendar();
-});
+});*/
 
 
-document.addEventListener("DOMContentLoaded", () => {
+/* document.addEventListener("DOMContentLoaded", () => {
     const filters = document.querySelectorAll("#wykladowca, #sala, #przedmiot, #grupa, #album");
     const clearButton = document.getElementById("wyczysc");
 
@@ -179,5 +135,4 @@ function loadFiltersFromURL() {
 }
 
 document.addEventListener("DOMContentLoaded", loadFiltersFromURL);
-});
-
+}); */

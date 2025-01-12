@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plan zajęć</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet">
 </head>
 <body class="dark-theme">
     <header>
         <img src="logo.svg" alt="Logo Uniwersytetu" class="logo">
-        <button id="theme-toggle" class="theme-switcher">🌙</button>
+        <button id="theme-toggle" class="theme-switcher">☀️</button>
     </header>
     <div class="main-content">
         <aside class="filters">
@@ -41,19 +42,19 @@
         
         <section class="calendar">
             <div class="controls">
-                <button id="prev" class="arrow">◀</button>
                 <button id="today">Dzisiaj</button>
-                <div id="date-range">06.01.2025 – 12.01.2025</div>
+                <div id="date-range">06.01.2025-12.01.2025</div> 
                 <select id="view">
-                    <option value="dzien">Dzień</option>
-                    <option value="tydzien" selected>Tydzień</option>
-                    <option value="miesiac">Miesiąc</option>
+                    <option value="dayGridDay">Dzień</option>
+                    <option value="dayGridWeek" selected>Tydzień</option>
+                    <option value="dayGridMonth">Miesiąc</option>
                 </select>
+                <button id="prev" class="arrow">◀</button>
+                <button id="next" class="arrow">▶</button>
                 <button id="fav" class="heart">♡</button>
                 <button id="share">🔗</button>
-                <button id="next" class="arrow">▶</button>
             </div>
-            <div id="calendar-grid"></div>
+            <div id="calendar"></div>
         </section>
     </div>
     <footer>
@@ -65,7 +66,7 @@
             <p><span class="dot teal"></span> Audytoria</p>
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>

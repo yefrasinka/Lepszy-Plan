@@ -1,25 +1,25 @@
-/* Reset CSS */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Ogólne style */
 body {
     font-family: Arial, sans-serif;
     transition: background-color 0.3s, color 0.3s;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden; 
 }
 
-/* Tematy */
 body.dark-theme {
     --calendar-bg: #000;
     --button-bg: #16449C;
     --button-text: white;
     --button-border: #555;
+    --event-modal: #424242;
     background-color: black;
     color: #d4cdd2;
 }
@@ -29,11 +29,11 @@ body.light-theme {
     --button-bg: black;
     --button-text: white;
     --button-border: black;
+    --event-modal: #e2e2e2;
     background-color: white;
     color: black;
 }
 
-/* Nagłówek */
 header {
     display: flex;
     justify-content: space-between;
@@ -54,14 +54,12 @@ header .logo {
     cursor: pointer;
 }
 
-/* Główna zawartość */
 .main-content {
     display: flex;
     flex: 1;
-    overflow: hidden;
+    overflow: auto; 
 }
 
-/* Filtry (lewa strona) */
 .filters {
     width: 25%;
     padding: 20px;
@@ -70,6 +68,7 @@ header .logo {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    overflow-y: auto;
 }
 
 .filters label {
@@ -116,23 +115,11 @@ header .logo {
     margin-right: 5px;
 }
 
-/* Kalendarz (prawa strona) */
-.calendar {
-    width: 75%;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background-color: var(--background-color);
-    color: var(--color);
-}
-
-/* Kontrola kalendarza */
 .controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap; /* Позволяет кнопкам выстраиваться в ряд на мобильных */
+    flex-wrap: wrap;
     gap: 10px;
 }
 
@@ -151,35 +138,106 @@ header .logo {
     font-size: 16px;
 }
 
-/* Tabela */
-#calendar-grid {
-    display: grid;
-    gap: 1px;
-    background-color: var(--button-border);
-}
-
-#calendar-grid div {
+.calendar {
+    width: 100%; 
+    padding: 10px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
     background-color: var(--calendar-bg);
     color: var(--color);
-    border: 1px solid var(--button-border);
+    overflow-y: auto; 
 }
 
-/* Stopka (Legenda) */
+.calendar-table {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1px;
+    background-color: var(--button-border);
+    border-collapse: collapse;
+}
+
+.calendar-table .time-column {
+    background: #f4f4f4;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.calendar-table .event-cell {
+    background: white;
+    height: 60px; 
+    border: 1px solid #ddd;
+    padding: 5px;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.calendar-table .event-cell:hover {
+    background-color: #f0f8ff;
+    cursor: pointer;
+}
+
+.event-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--event-modal);
+    color: var(--color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: none; 
+}
+
+.event-modal.active {
+    display: block; 
+}
+
+.event-modal .close-button {
+    background: rgb(148, 0, 0);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.week-view, .day-view {
+    display: block;
+}
+
+.week-view .day-header {
+    text-align: center;
+    font-weight: bold;
+    background-color: #f4f4f4;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.day-view .time-slot {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
 footer {
     padding: 10px;
     background-color: var(--background-color);
     color: var(--color);
-    position: absolute;
+    position: relative; 
     bottom: 0;
     left: 0;
     right: 0;
     z-index: 10;
 }
 
-/* Stopka */
 footer .legend {
     display: flex;
     justify-content: space-evenly;
@@ -205,9 +263,7 @@ footer .dot.olive { background: olive; }
 footer .dot.orange { background: orange; }
 footer .dot.teal { background: teal; }
 
-/* Mediacje dla urządzeń mobilnych */
 @media (max-width: 600px) {
-    /* Nagłówek */
     header {
         flex-direction: column;
         align-items: flex-start;
@@ -222,13 +278,10 @@ footer .dot.teal { background: teal; }
         margin-top: 10px;
     }
 
-    /* Główna zawartość */
     .main-content {
         flex-direction: column;
-        overflow: auto;
     }
 
-    /* Filtry (lewa strona) */
     .filters {
         width: 100%;
         padding: 15px;
@@ -239,25 +292,27 @@ footer .dot.teal { background: teal; }
         font-size: 12px;
     }
 
-    /* Kalendarz (prawa strona) */
     .calendar {
-        width: 100%;
-        padding: 15px;
+        padding: 10px;
+        height: auto; 
+    }
+
+     .controls button:not(.controls select):not(.controls button#today) {
+        width: 35px;
+        height: 35px;
+        padding: 0;
+        font-size: 14px;
+    }
+
+    .controls button#today,
+    .controls select {
+        width: 85px;
     }
 
     .controls {
         flex-direction: row;
         justify-content: space-between;
         gap: 5px;
-    }
-
-    /* Табы */
-    #calendar-grid {
-        display: grid;
-        gap: 1px;
-        background-color: var(--button-border);
-        grid-template-columns: 1fr;
-        overflow-y: auto; /* Прокрутка таблицы */
     }
 
     .filters .checkboxes {
@@ -269,35 +324,7 @@ footer .dot.teal { background: teal; }
         padding: 8px;
     }
 
-    .filters .checkboxes input {
-        width: 15px;
-        height: 15px;
-    }
-
-    /* Кнопки */
-    .controls button:not(.controls select):not(.controls button#today) {
-        width: 35px;
-        height: 35px;
-        padding: 0;
-        font-size: 14px;
-    }
-
-    /* Присваиваем более длинные кнопки для "dzisiaj" и выпадающего списка */
-    .controls button#today,
-    .controls select {
-        min-width: 50px;
-    }
-
-    /* Стиль для футера */
     footer {
-        position: relative;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: var(--background-color);
-        color: var(--color);
-        padding: 10px;
-        z-index: 10;
+        position: relative; 
     }
 }
-
