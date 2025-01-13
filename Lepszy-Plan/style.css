@@ -278,6 +278,15 @@ footer .dot.teal { background: teal; }
         margin-top: 10px;
     }
 
+    #export-ical {
+        padding: 8px;
+        border: 1px solid #555;
+        border-radius: 5px;
+        background: #16449C;
+        color: white;
+        cursor: pointer;
+    }
+
     .main-content {
         flex-direction: column;
     }
