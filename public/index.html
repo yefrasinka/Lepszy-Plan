@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan zajęć</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet">
+</head>
+<body class="dark-theme">
+<header>
+    <img src="assets/images/logo.svg" alt="Logo Uniwersytetu" class="logo">
+    <button id="theme-toggle" class="theme-switcher">☀️</button>
+</header>
+<div class="main-content">
+    <aside class="filters">
+        <label for="wykladowca">Wykładowca</label>
+        <input type="text" id="wykladowca">
+
+        <label for="sala">Sala</label>
+        <input type="text" id="sala">
+
+        <label for="przedmiot">Przedmiot</label>
+        <input type="text" id="przedmiot">
+
+        <label for="grupa">Grupa</label>
+        <input type="text" id="grupa">
+
+        <label for="album">Numer albumu</label>
+        <input type="text" id="album">
+
+        <div class="checkboxes">
+            <label><input type="checkbox" id="wyklad"> Wykład</label>
+            <label><input type="checkbox" id="lektorat"> Lektorat</label>
+            <label><input type="checkbox" id="audytoria"> Audytoria</label>
+            <label><input type="checkbox" id="laboratoria"> Laboratoria</label>
+        </div>
+
+        <button id="szukaj">Szukaj</button>
+        <button id="wyczysc">Wyczyść filtry</button>
+    </aside>
+
+    <section class="calendar">
+        <div class="controls">
+            <button id="today">Dzisiaj</button>
+            <div id="date-range">06.01.2025-12.01.2025</div>
+            <select id="view">
+                <option value="dayGridDay">Dzień</option>
+                <option value="dayGridWeek" selected>Tydzień</option>
+                <option value="dayGridMonth">Miesiąc</option>
+            </select>
+            <button id="prev" class="arrow">◀</button>
+            <button id="next" class="arrow">▶</button>
+            <button id="fav" class="heart">♡</button>
+            <button id="share">🔗</button>
+            <button id="downloadScheduleButton">Eksport w iCal</button>
+        </div>
+        <div id="calendar"></div>
+    </section>
+</div>
+<footer>
+    <div class="legend">
+        <p><span class="dot green"></span> Laboratorium</p>
+        <p><span class="dot blue"></span> Wykład</p>
+        <p><span class="dot olive"></span> Projekt</p>
+        <p><span class="dot orange"></span> Lektorat</p>
+        <p><span class="dot teal"></span> Audytoria</p>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>
