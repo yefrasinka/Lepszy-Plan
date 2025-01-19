@@ -1,35 +1,32 @@
 <?php
+
 namespace App\Controller;
 
-use App\Service\Router;
-use App\Service\Templating;
-use App\Model\Schedule;
-use App\Model\User;
-use App\Exception\NotFoundException;
+use App\Controller\ScheduleController;
+use App\Controller\ApiController;
 
-class UserScheduleController
-{
-    private Router $router;
-    private Templating $templating;
+class UserScheduleController {
+    private $scheduleController;
+    private $apiController;
 
-    public function __construct(Router $router, Templating $templating)
-    {
-        $this->router = $router;
-        $this->templating = $templating;
+    public function __construct() {
+        $this->scheduleController = new ScheduleController();
+        $this->apiController = new ApiController();
     }
 
-    public function showUserScheduleAction(int $userId): string
-    {
-        $user = User::find($userId);
-        if (!$user) {
-            throw new NotFoundException("User with ID $userId not found.");
+    public function getStudentSchedule($filters, $studentId) {
+        $filters['album'] = $studentId;
+        $schedules = $this->scheduleController->filterSchedules($filters);
+
+        if (empty($schedules)) {
+            $params = [
+                'number' => $studentId,
+                'start' => $filters['start'] ?? date('Y-m-d'),
+                'end' => $filters['end'] ?? date('Y-m-d', strtotime('+7 days')),
+            ];
+            $schedules = $this->apiController->fetchFromZUT($params);
         }
 
-        $schedules = Schedule::findAll(); // Adjust as needed to filter by user
-        return $this->templating->render("schedule/user_schedule.html.php", [
-            'user' => $user,
-            'schedules' => $schedules,
-            'router' => $this->router,
-        ]);
+        return $schedules;
     }
 }

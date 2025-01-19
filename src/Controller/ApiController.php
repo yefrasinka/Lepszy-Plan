@@ -1,68 +1,22 @@
 <?php
+
 namespace App\Controller;
 
-use App\Service\Router;
-use App\Service\Templating;
-use App\Model\Worker;
-use App\Model\User;
-use App\Model\Schedule;
-use App\Model\Group;
-use App\Model\Room;
-use App\Model\Subject;
+use App\Service\Seeder;
 
-class ApiController
-{
-    private Router $router;
-    private Templating $templating;
+class ApiController {
+    public function fetchFromZUT($params) {
+        $url = "https://plan.zut.edu.pl/schedule_student.php?";
+        $query = http_build_query($params);
+        $url .= $query;
 
-    public function __construct(Router $router, Templating $templating)
-    {
-        $this->router = $router;
-        $this->templating = $templating;
-    }
+        $seeder = new Seeder();
+        $data = $seeder->fetchData($url);
 
-    public function indexAction(): string
-    {
-        return json_encode([
-            'message' => 'Welcome to the API',
-            'routes' => [
-                'GET /workers',
-                'GET /users',
-                'GET /schedules',
-                'GET /groups',
-                'GET /rooms',
-                'GET /subjects'
-            ]
-        ]);
-    }
+        if ($data) {
+            $seeder->processData($data);
+        }
 
-    public function getWorkersAction(): string
-    {
-        return json_encode(Worker::findAll());
-    }
-
-    public function getUsersAction(): string
-    {
-        return json_encode(User::findAll());
-    }
-
-    public function getSchedulesAction(): string
-    {
-        return json_encode(Schedule::findAll());
-    }
-
-    public function getGroupsAction(): string
-    {
-        return json_encode(Group::findAll());
-    }
-
-    public function getRoomsAction(): string
-    {
-        return json_encode(Room::findAll());
-    }
-
-    public function getSubjectsAction(): string
-    {
-        return json_encode(Subject::findAll());
+        return $data;
     }
 }

@@ -39,7 +39,7 @@ class Seeder {
         echo "Database seeding complete!\n";
     }
 
-    private function fetchData($url) {
+    public function fetchData($url) {
         try {
             $response = file_get_contents($url);
             if ($response === false) {
@@ -58,7 +58,7 @@ class Seeder {
         }
     }
 
-    private function processData($data, $studentId) {
+    public function processData($data, $studentId) {
         $rooms = array_unique(array_filter(array_column($data, 'room')));
         $groups = array_unique(array_filter(array_column($data, 'group_name')));
         $subjects = array_unique(array_filter(array_column($data, 'subject')));

@@ -7,8 +7,7 @@ class Router
     public function generatePath(string $action, ?array $params = []): string
     {
         $query = $action ? http_build_query(array_merge(['action' => $action], $params)) : null;
-        $path = "/index.php" . ($query ? "?$query" : "");
-        return $path;
+        return "/index.php" . ($query ? "?$query" : "");
     }
 
     public function redirect($path): void
@@ -25,6 +24,18 @@ class Router
             case 'generate_ical':
                 $this->serveGenerateIcal();
                 break;
+            case 'filter_schedules':
+                $this->serveFilterSchedules();
+                break;
+            case 'student_schedule':
+                $this->serveStudentSchedule();
+                break;
+            case 'save_favorite':
+                $this->serveSaveFavorite();
+                break;
+            case 'get_favorites':
+                $this->serveGetFavorites();
+                break;
             case 'seed':
                 $this->serveSeed();
                 break;
@@ -37,18 +48,58 @@ class Router
 
     private function serveGenerateIcal(): void
     {
-        // Include and execute generate_ical.php logic
-        require __DIR__ . '/../generate_ical.php';
+        require __DIR__ . '/../Controller/ICalendarController.php';
+        $controller = new \App\Controller\ICalendarController();
+        $filters = $_GET;
+        $scheduleController = new \App\Controller\ScheduleController();
+        $schedules = $scheduleController->filterSchedules($filters);
+        $controller->exportToICalendar($schedules);
+    }
+
+    private function serveFilterSchedules(): void
+    {
+        require __DIR__ . '/../Controller/ScheduleController.php';
+        $controller = new \App\Controller\ScheduleController();
+        $filters = $_GET;
+        $results = $controller->filterSchedules($filters);
+        header('Content-Type: application/json');
+        echo json_encode($results);
+    }
+
+    private function serveStudentSchedule(): void
+    {
+        require __DIR__ . '/../Controller/UserScheduleController.php';
+        $controller = new \App\Controller\UserScheduleController();
+        $filters = $_GET;
+        $studentId = $_GET['album'] ?? null;
+        $schedules = $controller->getStudentSchedule($filters, $studentId);
+        header('Content-Type: application/json');
+        echo json_encode($schedules);
+    }
+
+    private function serveSaveFavorite(): void
+    {
+        require __DIR__ . '/../Controller/FavoriteController.php';
+        $controller = new \App\Controller\FavoriteController();
+        $scheduleId = $_GET['schedule_id'] ?? null;
+        $controller->saveToFavorites($scheduleId);
+        echo json_encode(['status' => 'success']);
+    }
+
+    private function serveGetFavorites(): void
+    {
+        require __DIR__ . '/../Controller/FavoriteController.php';
+        $controller = new \App\Controller\FavoriteController();
+        $favorites = $controller->getFavorites();
+        header('Content-Type: application/json');
+        echo json_encode($favorites);
     }
 
     private function serveSeed(): void
     {
-        // Include and execute Seeder logic
         require __DIR__ . '/../Service/Seeder.php';
-        $seeder = new Seeder();
+        $seeder = new \App\Service\Seeder();
         $seeder->seed();
         echo "Database seeding complete!";
     }
 }
-
-
